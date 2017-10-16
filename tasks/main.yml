@@ -1,0 +1,38 @@
+
+    - name: Add pcp key
+      apt_key: url=https://bintray.com/user/downloadSubjectPublicKey?username=pcp
+      tags:
+      - pcp-vector
+      become: yes
+
+    - name: Add pcp repository
+      apt_repository: repo="deb https://dl.bintray.com/pcp/xenial xenial main" update_cache=yes
+      tags:
+      - pcp-vector
+      become: yes
+
+    - name: Install pcp
+      apt: pkg={{ item }}
+      tags:
+      - pcp-vector
+      with_items:
+      - pcp
+      - pcp-webapi
+      become: yes
+
+    - name: Get vector
+      get_url: url=https://github.com/Netflix/vector/archive/v1.1.2.tar.gz dest=/tmp
+      tags:
+      - pcp-vector
+
+    - name: Create vector installation directory
+      file: dest=/opt/vector state=directory
+      tags:
+      - pcp-vector
+      become: yes
+
+    - name: Extract vector
+      unarchive: src=/tmp/vector-1.1.2.tar.gz dest=/opt remote_src=yes
+      tags:
+      - pcp-vector
+      become: yes
